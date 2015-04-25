@@ -19,6 +19,7 @@ class WorkoutsViewController: UICollectionViewController {
     var snapshotCell: UIView!
     var startIndex: NSIndexPath!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,6 +31,8 @@ class WorkoutsViewController: UICollectionViewController {
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
         collectionView?.addGestureRecognizer(longPressGesture)
+
+        
     }
     
     func handleLongPress(sender: UILongPressGestureRecognizer) {
@@ -47,50 +50,33 @@ class WorkoutsViewController: UICollectionViewController {
                     collectionView?.addSubview(snapshotCell)
             }
         case .Changed:
+            
+
             if let indexPath = collectionView?.indexPathForItemAtPoint(touch), let cell = collectionView?.cellForItemAtIndexPath(indexPath) as? WorkoutCell {
                 if indexPath != startIndex {
-                    
-                    println("start = \(startIndex.row)   index = \(indexPath.row)")
-                    
-                    let minIndex = min(startIndex.row, indexPath.row)
-                    let maxIndex = max(startIndex.row, indexPath.row)
-                    
 
                     let endingObject = fetchedResultsController.objectAtIndexPath(indexPath) as! Workout
                     let endIndex = endingObject.index
 
                     if startIndex.row < indexPath.row {
                         // Dragged down a row
-                        println("down")
-                        
                         // Get all rows after start index that need update
                         for i in (startIndex.row + 1)...indexPath.row {
-                            
                             let ip = NSIndexPath(forItem: i, inSection: 0)
                             let object = fetchedResultsController.objectAtIndexPath(ip) as! Workout
-                            println("object \(object.index) to \(object.index.integerValue + 1)")
                             object.index = object.index.integerValue + 1
                         }
                     } else if startIndex.row > indexPath.row {
                         // Dragged up a row
-                        println("up")
-                        
                         // Get all rows before start index that need update
                         for i in indexPath.row..<startIndex.row {
                             let ip = NSIndexPath(forItem: i, inSection: 0)
                             let object = fetchedResultsController.objectAtIndexPath(ip) as! Workout
-                            println("object \(object.index) to \(object.index.integerValue - 1)")
                             object.index = object.index.integerValue - 1
-                            
                         }
                     }
                     
-                    
-
                     let startingObject = fetchedResultsController.objectAtIndexPath(startIndex) as! Workout
-
-                    println("sobject \(startingObject.index) to \(endIndex)")
-
                     startingObject.index = endIndex
 
                     collectionView?.moveItemAtIndexPath(startIndex, toIndexPath: indexPath)
@@ -115,6 +101,8 @@ class WorkoutsViewController: UICollectionViewController {
         }
         
     }
+    
+
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "WorkoutSegue" {
@@ -196,7 +184,7 @@ extension WorkoutsViewController {
             // Workout Cell
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier("WorkoutCell", forIndexPath: indexPath) as! WorkoutCell
             let cellWorkout = fetchedResultsController.objectAtIndexPath(indexPath) as! Workout
-            cell.nameLabel.text = "\(cellWorkout.index) \(cellWorkout.name)"
+            cell.nameLabel.text = cellWorkout.name
             cell.exerciseLabel.text = "\(cellWorkout.exercises.count) exercise(s)"
             return cell
         }
@@ -206,14 +194,8 @@ extension WorkoutsViewController {
 
 // MARK: UICollectionViewDelegateFlowLayout
 extension WorkoutsViewController: UICollectionViewDelegateFlowLayout {
-    var spacing: CGFloat! {
-        return 8.0
-    }
-    
-    var rows: CGFloat! {
-        return 4.0
-    }
-    
+    var spacing: CGFloat! { return 8.0 }
+    var rows: CGFloat! { return 4.0 }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
@@ -233,8 +215,8 @@ extension WorkoutsViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-            let x = (view.frame.width - (rows + 1.0) * spacing) / rows
-            return CGSize(width: x, height: x)
+        let x = (view.frame.width - (rows + 1.0) * spacing) / rows
+        return CGSize(width: x, height: x)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -245,36 +227,23 @@ extension WorkoutsViewController: UICollectionViewDelegateFlowLayout {
 // MARK: NSFetchedResultsControllerDelegate
 extension WorkoutsViewController: NSFetchedResultsControllerDelegate {
     
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {}
     
-    }
-    
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        collectionView?.performBatchUpdates({
-        
-        }, completion: { success in
-            
-        })
-    }
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {}
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
         switch type {
-        
         case NSFetchedResultsChangeType.Insert:
             collectionView?.insertItemsAtIndexPaths([newIndexPath!])
         case NSFetchedResultsChangeType.Delete:
-                collectionView?.deleteItemsAtIndexPaths([indexPath!])
+            collectionView?.deleteItemsAtIndexPaths([indexPath!])
         case NSFetchedResultsChangeType.Move:
-            println("move")
             break
         case NSFetchedResultsChangeType.Update:
             collectionView?.reloadItemsAtIndexPaths([indexPath!])
-            break
         }
     }
-    
-
 }
 
 

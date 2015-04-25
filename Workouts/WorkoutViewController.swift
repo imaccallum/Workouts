@@ -66,7 +66,7 @@ class WorkoutViewController: UIViewController {
             break
         case .Changed:
             snapshotCell.center.y = touch.y
-
+           
             if let indexPath = tableView?.indexPathForRowAtPoint(touch) {
                 if !indexPath.isEqual(startIndex) {
                     
@@ -96,6 +96,10 @@ class WorkoutViewController: UIViewController {
         }
     }
     
+    func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
+        tableView.scrollEnabled = true
+        return proposedDestinationIndexPath
+    }
     
     @IBAction func addButtonPressed(sender: UIBarButtonItem) {
         let newExerciseData = NSEntityDescription.insertNewObjectForEntityForName("ExerciseData", inManagedObjectContext: managedObjectContext) as! ExerciseData
