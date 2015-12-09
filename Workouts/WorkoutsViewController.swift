@@ -27,7 +27,10 @@ class WorkoutsViewController: UICollectionViewController {
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchAllWorkouts(), managedObjectContext: managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
-        fetchedResultsController.performFetch(nil)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch _ {
+        }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
         collectionView?.addGestureRecognizer(longPressGesture)
@@ -52,7 +55,7 @@ class WorkoutsViewController: UICollectionViewController {
         case .Changed:
             
 
-            if let indexPath = collectionView?.indexPathForItemAtPoint(touch), let cell = collectionView?.cellForItemAtIndexPath(indexPath) as? WorkoutCell {
+            if let indexPath = collectionView?.indexPathForItemAtPoint(touch) {
                 if indexPath != startIndex {
 
                     let endingObject = fetchedResultsController.objectAtIndexPath(indexPath) as! Workout
@@ -97,7 +100,10 @@ class WorkoutsViewController: UICollectionViewController {
                 })
             }
 
-            managedObjectContext?.save(nil)
+            do {
+                try managedObjectContext?.save()
+            } catch _ {
+            }
         }
         
     }
@@ -127,7 +133,7 @@ extension WorkoutsViewController {
         }
         
         let createAction = UIAlertAction(title: "Create", style: .Default) { action in
-            self.createWorkout(nameTextField.text)
+            self.createWorkout(nameTextField.text ?? "")
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in }
@@ -232,7 +238,6 @@ extension WorkoutsViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(controller: NSFetchedResultsController) {}
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-        
         switch type {
         case NSFetchedResultsChangeType.Insert:
             collectionView?.insertItemsAtIndexPaths([newIndexPath!])
@@ -243,6 +248,7 @@ extension WorkoutsViewController: NSFetchedResultsControllerDelegate {
         case NSFetchedResultsChangeType.Update:
             collectionView?.reloadItemsAtIndexPaths([indexPath!])
         }
+
     }
 }
 

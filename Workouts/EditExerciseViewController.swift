@@ -27,14 +27,17 @@ class EditExerciseViewController: UIViewController {
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchAllExercises(), managedObjectContext: managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
-        fetchedResultsController.performFetch(nil)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch _ {
+        }
         
         exercisesPickerView.dataSource = self
         exercisesPickerView.delegate = self
         
         
         if let exercise = exerciseData.exercise {
-            let index = find(fetchedResultsController.fetchedObjects as! [Exercise], exercise)
+            let index = (fetchedResultsController.fetchedObjects as! [Exercise]).indexOf(exercise)
             exercisesPickerView.selectRow(index!, inComponent: 0, animated: false)
         }
         
@@ -64,7 +67,7 @@ extension EditExerciseViewController: UIPickerViewDataSource, UIPickerViewDelega
         return fetchedResultsController.fetchedObjects?.count ?? 0
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return (fetchedResultsController.fetchedObjects as! [Exercise])[row].name
     }
     
@@ -86,7 +89,7 @@ extension EditExerciseViewController {
         }
         
         let createAction = UIAlertAction(title: "Create", style: .Default) { action in
-            self.createExercise(nameTextField.text)
+            self.createExercise(nameTextField.text ?? "")
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in }
@@ -115,7 +118,10 @@ extension EditExerciseViewController {
     func createExercise(name: String) {
         let newExercise = NSEntityDescription.insertNewObjectForEntityForName("Exercise", inManagedObjectContext: managedObjectContext!) as! Exercise
         newExercise.name = name
-        managedObjectContext?.save(nil)
+        do {
+            try managedObjectContext?.save()
+        } catch _ {
+        }
     }
     
     func fetchAllExercises() -> NSFetchRequest {

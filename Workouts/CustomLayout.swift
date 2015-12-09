@@ -21,8 +21,8 @@ class CustomLayout: UICollectionViewLayout {
         return self.collectionView!.bounds.size
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
-        var attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
         let currentRow = CGFloat(indexPath.row)
         let row = currentRow % rows
         let column = floor(currentRow / 3.0)
@@ -34,7 +34,6 @@ class CustomLayout: UICollectionViewLayout {
         
         
         var transform = CATransform3DIdentity
-        let center = round(rows - 1.0 / 2.0)
         
         var rotation: CGFloat!
         switch row {
@@ -56,18 +55,18 @@ class CustomLayout: UICollectionViewLayout {
         return attributes
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var attributes = [UICollectionViewLayoutAttributes]()
         
         let sectionsCount = self.collectionView!.dataSource!.numberOfSectionsInCollectionView!(self.collectionView!)
         for section in 0..<sectionsCount {
             /// add header
-            attributes.append(self.layoutAttributesForSupplementaryViewOfKind(UICollectionElementKindSectionHeader, atIndexPath: NSIndexPath(forItem: 0, inSection: section)))
+            attributes.append(self.layoutAttributesForSupplementaryViewOfKind(UICollectionElementKindSectionHeader, atIndexPath: NSIndexPath(forItem: 0, inSection: section))!)
             
             let itemsCount = self.collectionView!.numberOfItemsInSection(section)
             for item in 0..<itemsCount {
                 let indexPath = NSIndexPath(forItem: item, inSection: section)
-                attributes.append(self.layoutAttributesForItemAtIndexPath(indexPath))
+                attributes.append(self.layoutAttributesForItemAtIndexPath(indexPath)!)
             }
         }
         
@@ -76,8 +75,8 @@ class CustomLayout: UICollectionViewLayout {
         return attributes
     }
     
-    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
-        var attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
+    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
         attributes.frame = CGRect(x: 0, y: 0, width: 320, height: 50)
         
         return attributes

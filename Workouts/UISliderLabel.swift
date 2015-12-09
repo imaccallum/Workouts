@@ -45,12 +45,7 @@ class UISliderLabel: UILabel {
     var deviation: CGFloat = 10
     var increment: CGFloat = 1
     
-    override init() {
-        super.init()
-        setup()
-    }
-    
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }

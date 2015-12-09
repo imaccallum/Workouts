@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>D873C84F-23EE-4A51-971B-382ED6D3E5BF</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Workouts</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>9A327E43AAD701B51254F458A2225B503C4929E0</key>
 		<string>https://github.com/iMac239/Workouts.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Workouts.xcodeproj</string>
+	<string>Workouts.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>9A327E43AAD701B51254F458A2225B503C4929E0</key>

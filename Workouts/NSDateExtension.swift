@@ -19,7 +19,7 @@ enum TimeZone {
 
 extension NSDate {
     
-    func toString(#format: NSDateFormat, timeZone: TimeZone) -> String
+    func toString(format format: NSDateFormat, timeZone: TimeZone) -> String
     {
         let formatter = NSDateFormatter()
         formatter.calendar = NSCalendar.currentCalendar()

@@ -18,7 +18,7 @@ class WorkoutViewController: UIViewController {
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController = NSFetchedResultsController()
     var fetchRequest: NSFetchRequest! {
-        var fetchRequest = NSFetchRequest(entityName: "ExerciseData")
+        let fetchRequest = NSFetchRequest(entityName: "ExerciseData")
         let sortDescriptor = NSSortDescriptor(key: "index", ascending: false)
         
         let predicate = NSPredicate(format: "workout == %@", workout! ?? Workout())
@@ -38,7 +38,10 @@ class WorkoutViewController: UIViewController {
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
-        fetchedResultsController.performFetch(nil)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch _ {
+        }
         
         tableView.delegate = self
         tableView.dataSource = self        
@@ -143,7 +146,7 @@ extension WorkoutViewController: NSFetchedResultsControllerDelegate {
     }
 
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-
+        
         switch type {
         case NSFetchedResultsChangeType.Insert:
             tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
@@ -154,6 +157,7 @@ extension WorkoutViewController: NSFetchedResultsControllerDelegate {
         case NSFetchedResultsChangeType.Update:
             tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
         }
+
     }
 }
 
@@ -169,7 +173,7 @@ extension WorkoutViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) 
         let cellExerciseData = fetchedResultsController.objectAtIndexPath(indexPath) as! ExerciseData
         cell.textLabel?.text = cellExerciseData.exercise?.name ?? "New Exercise"
         cell.detailTextLabel?.text = cellExerciseData.index.stringValue
